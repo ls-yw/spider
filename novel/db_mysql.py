@@ -25,7 +25,8 @@ class DbMysql(object):
                                 user=self.user,
                                 passwd=self.pwd,
                                 db=self.name,     
-                                charset=self.charset    
+                                charset=self.charset,
+                                use_unicode=True   
                                 )
         except MySQLdb.DatabaseError, e:
             raise DatabaseError('can not connect to MySQL://%s:%s, exception: %s' % (self.host, self.port, e.args[1]))
@@ -46,8 +47,10 @@ class DbMysql(object):
         if not self._vaid_connection():
             self._connect()
             self._connection.autocommit(1)
+            #cursor = self._connection.cursor(cursorclass=MySQLdb.cursors.DictCursor)
             cursor = self._connection.cursor()
         else:
+            #cursor = self._connection.cursor(cursorclass=MySQLdb.cursors.DictCursor)
             cursor = self._connection.cursor()
         return cursor
     
