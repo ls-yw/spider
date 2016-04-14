@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 #from urllib.parse import urlparse
 import re
 import urlparse
-import file
 from pip._vendor.requests.packages import chardet
 
 

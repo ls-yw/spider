@@ -4,6 +4,7 @@
 '''
 
 import urllib
+import urllib2
 
 
 class HtmlDownloader(object):
@@ -13,7 +14,9 @@ class HtmlDownloader(object):
         if url is None:
             return None
         
-        response = urllib.urlopen(url)   #2.7
+        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0','Referer' : url}
+        request = urllib2.Request(url,None,headers)
+        response = urllib2.urlopen(request)   #2.7
         #response = urllib.request.urlopen(url)   #3
        
         if response.getcode() != 200:

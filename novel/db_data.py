@@ -4,28 +4,62 @@ Created on 2016年4月12日
 
 @author: user
 '''
-from novel import db_mysql
+from novel import db_mysql,file_handle
+import time
 
 
 class DbData(object):
     def __init__(self):
         self.mysql = db_mysql.DbMysql()
+        self.filelogs = file_handle.FileHandle()
         self.domians = set()
         self.book_ids = set()
     
+    
 
-    def get_domains(self):
-        lists = self.mysql.fetchall('select * from zks_domain where id = 2 order by id asc')
+    #判断该book_id是否已存入过数据库
+    def _is_insert(self,domain_id,book_id):
+        count = self.mysql.query("select id from zks_books where domain_id=%d and book_id=%d"%(domain_id,book_id))
+        if count > 0:
+            return True
+        else:
+            return False
+    
+    #把小说信息存入数据库
+    def save_book(self, domain_id, book_id, book_name, author, descript):
+        if self._is_insert(domain_id,book_id) is False:
+            
+            row = self.mysql.query("INSERT INTO zks_books (`domain_id`,`book_id`,`name`,`description`,`author`,`create_time`) VALUES ('%d','%d','%s','%s','%s','%s')"%(domain_id, book_id, book_name, descript, author, time.strftime("%Y-%m-%d %X", time.localtime())))
+            if row:
+                self.book_ids.add(book_id)
+                
+            else:
+                return None
+        else:
+            return None
+            
+    
+    
+    def _get_domain(self,domian_id):
+        if domian_id is None or domian_id == '':
+            sql = 'select * from zks_domain order by id asc limit 0,1'
+        else:
+            sql = 'select * from zks_domain where id > %d order by id asc limit 0,1'%(int(domian_id))
+            
+        lists = self.mysql.fetchall(sql)
+        
+        if len(lists) == 0:
+            return self._get_domain(None);
         
         for list in lists:
-            self.domians.add(list)
+            return list
     
-    def get_domain(self):
-        if self._has_domains():
-            return self.domians.pop()
-        else:
-            self.get_domains()
-            return self.domians.pop()
+    
+    #获取需要采集的domain
+    def get_domain(self,domainpath):
+        domian_id = self.filelogs.read_file(domainpath)
+        return self._get_domain(domian_id)
+        
 
     def _has_domains(self):
         return len(self.domians) != 0
@@ -38,14 +72,9 @@ class DbData(object):
     
     
     def get_book_ids(self,domain_id):
-        lists = self.mysql.fetchall('select * from zks_books where domain_id = %d'%(domain_id),)
-        print lists
+        lists = self.mysql.fetchall('select * from zks_books where domain_id = %d'%(domain_id))
         for list in lists:
-            a = list[2]
-            #print unicode(a,'gbk')
-            self.book_ids.add(a)
-        print self.book_ids
-        exit()
+            self.book_ids.add(int(list[2]))
     
     def is_collect(self,book_id,domain_id):
         if self._has_book_ids():
@@ -59,6 +88,10 @@ class DbData(object):
                 return True
             else:
                 return False
+
+    
+    
+    
     
     
 

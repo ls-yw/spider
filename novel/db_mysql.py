@@ -4,6 +4,7 @@ Created on 2016年4月12日
 @author: user
 '''
 import MySQLdb
+from novel import file_handle
 DatabaseError = MySQLdb.DatabaseError
 
 class DbMysql(object):
@@ -15,6 +16,7 @@ class DbMysql(object):
         self.port = 3306
         self.charset='utf8'
         self._connection = None
+        self.logs = file_handle.FileHandle()
     
     #连接数据库
     def _connect(self):
@@ -65,6 +67,9 @@ class DbMysql(object):
     #执行sql操作
     def query(self,query,args=None):
         cursor = self._cursor()
+        #记录日志
+        self.logs.writeLogs('SQL:'+query)
+        
         cursor.execute(query,args)
         self.affected_rows = self._connection.affected_rows()
         self.insert_id = self._connection.insert_id()
@@ -74,6 +79,9 @@ class DbMysql(object):
     # 获取全部结果
     def fetchall(self, query, args=None):
         cursor = self._cursor()
+        #记录日志
+        self.logs.writeLogs('SQL:'+query)
+        
         cursor.execute(query, args)
         result = cursor.fetchall()
         cursor.close()
@@ -87,6 +95,12 @@ class DbMysql(object):
         cursor.close()
         return result
     
+    def querycount(self,query,args=None):
+        cursor = self._cursor()
+        #记录日志
+        self.logs.writeLogs('SQL:'+query)
+        
+        return cursor.execute(query,args)
     
     
     
