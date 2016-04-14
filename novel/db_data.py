@@ -4,7 +4,7 @@ Created on 2016年4月12日
 
 @author: user
 '''
-from novel import db_mysql,file_handle
+import db_mysql,file_handle
 import time
 
 

@@ -2,11 +2,13 @@
 '''
 @author: linsen
 '''
+import file_handle
 
 
 
 class UrlManager(object):
     def __init__(self):
+        self.filelogs = file_handle.FileHandle()
         self.new_urls = set()
         self.old_urls = set()
     
@@ -15,10 +17,12 @@ class UrlManager(object):
             return
         if url not in self.new_urls and url not in self.old_urls:
             self.new_urls.add(url)
+        
 
     def add_new_urls(self, urls):
         if urls is None or len(urls) == 0:
             return
+        
         for url in urls:
             self.add_new_url(url)
     

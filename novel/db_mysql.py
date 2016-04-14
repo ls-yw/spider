@@ -4,7 +4,7 @@ Created on 2016年4月12日
 @author: user
 '''
 import MySQLdb
-from novel import file_handle
+import file_handle
 DatabaseError = MySQLdb.DatabaseError
 
 class DbMysql(object):

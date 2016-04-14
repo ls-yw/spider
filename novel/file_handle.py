@@ -11,11 +11,11 @@ import os
 class FileHandle(object):
 
 
-    def writeLogs(self,preg):
+    def writeLogs(self,content):
         file_name = time.strftime("%Y-%m-%d", time.localtime())
         with open('logs/%s.txt'%(file_name), 'a') as f:
             f.write(time.strftime("%Y-%m-%d %X", time.localtime())+"\t")
-            f.write(preg+"\n")
+            f.write(content+"\n")
 
     def writeFile(self,filepath,content):
         with open(filepath, 'w') as f:
