@@ -18,16 +18,24 @@ class HtmlDownloader(object):
         request = urllib2.Request(url,None,headers)
         self.filelogs.writeLogs(str(url))
         try:
-            response = urllib2.urlopen(request)   #2.7
+            response = urllib2.urlopen(request,timeout=30)   #2.7
 #             response = urllib.urlopen(url)   #3
         except urllib2.URLError, e:
             self.filelogs.writeLogs(e.reason)
-        
-        if response.getcode() != 200:
-            self.filelogs.writeLogs(url+' 状态：'+response.getcode())
             return None
         
-        return response.read()
+        if response:
+            if response.getcode() != 200:
+                self.filelogs.writeLogs(url+' 状态：'+response.getcode())
+                return None
+            try:
+                readcont = response.read()
+                return readcont
+            except:
+                self.filelogs.writeLogs('read失败')
+                return None
+        else:
+            return None
     
     
 

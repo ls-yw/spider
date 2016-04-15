@@ -41,7 +41,6 @@ class NovelMain(object):
         
     def craw(self):
         start_time = time.time()
-        count = 1
         
         domain = self.data.get_domain(self.domainpath)
         if domain is None:
