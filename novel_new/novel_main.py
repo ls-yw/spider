@@ -81,7 +81,7 @@ class NovelMain(object):
                     else:
                         iconv_type = chardet.detect(html_cont)['encoding']
                
-                    html_cont_coding =  html_cont.decode(iconv_type).encode('utf-8')
+                    html_cont_coding =  html_cont.decode(iconv_type,'ignore').encode('utf-8')
                  
                  
                     #获取book_id

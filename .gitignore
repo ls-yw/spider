@@ -1,2 +1,4 @@
 *.pyc
 .settings/
+logs/
+domain.txt
