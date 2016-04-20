@@ -31,9 +31,10 @@ class NovelMain(object):
         self.domain = domain[1].encode('utf-8')
         self.name = domain[2]
         self.book_regular = domain[3].encode('utf-8')
-        self.bookname_regular = domain[4].encode('utf-8')
-        self.author_regular = domain[5].encode('utf-8')
-        self.descript_regular = domain[6].encode('utf-8')
+        self.book_mark_id = domain[4].encode('utf-8')
+        self.bookname_regular = domain[5].encode('utf-8')
+        self.author_regular = domain[6].encode('utf-8')
+        self.descript_regular = domain[7].encode('utf-8')
     
         
     def craw(self):
@@ -64,7 +65,7 @@ class NovelMain(object):
             self.start_id = self.data.get_book_id(self.domain_id, self.start_id)
             
             #组装book_id 的 url
-            full_url = self.parser.fill_url_book_id(new_url, self.start_id)
+            full_url = self.parser.fill_url_book_id(new_url, self.start_id, self.book_mark_id)
             
             if full_url and full_url != '':
                 self.filelogs.writeLogs('下载页面开始')
@@ -74,7 +75,6 @@ class NovelMain(object):
                 if html_cont is None:
                     fail_count = fail_count + 1
                 else:
-                    fail_count = 0
             
                     if chardet.detect(html_cont)['encoding'] == 'GB2312' or chardet.detect(html_cont)['encoding'] == 'gb2312':
                         iconv_type = 'gbk'
@@ -100,8 +100,11 @@ class NovelMain(object):
                         descript = self.parser.del_space(descript)
                      
                     if book_name is not None and author is not None:
+                        fail_count = 0
                         #把小说信息存入数据库
                         self.data.save_book(self.domain_id, book_id, book_name, author, descript)
+                    else:
+                        fail_count = fail_count + 1
                 
                 #连续失败50次，停止采集
                 if fail_count == 50:

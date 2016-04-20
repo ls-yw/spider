@@ -78,10 +78,44 @@ class HtmlParser(object):
         return preg
 
     #填充book_id进url
-    def fill_url_book_id(self,url,book_id):
-        url = re.sub(r'<{bookid}>', str(book_id), url)
+    def fill_url_book_id(self,url,book_id, book_mark_id):
+        book_mark_id = self.preg_book_id(book_id, book_mark_id)
+        
+        mark_id = self._get_url_calc(book_mark_id)
+        
+        url = re.sub(r'<{markid}>', str(mark_id), url)
+        
+        url = self.preg_book_id(book_id, url)
         return url
-
+    
+    #计算标记运算
+    def _get_url_calc(self,strnum):
+        res = strnum.split('+')
+        
+        if len(res) == 2:
+            return int(res[0]) + int(res[1])
+        
+        res = strnum.split('-')
+        if len(res) == 2:
+            return int(res[0]) - int(res[1])
+        
+        res = strnum.split('*')
+        if len(res) == 2:
+            return int(res[0]) * int(res[1])
+        
+        res = strnum.split('%%')
+        if len(res) == 2:
+            return int(res[0]) / int(res[1])
+        
+        res = strnum.split('%')
+        if len(res) == 2:
+            return int(res[0]) % int(res[1])
+    
+    #替换book_id标记
+    def preg_book_id(self,book_id,content):
+        content = re.sub(r'<{bookid}>', str(book_id), content)
+        return content
+    
     #去除空格
     def del_space(self,cont):
         cont = re.sub(r'^(&nbsp;)+', '', cont)
