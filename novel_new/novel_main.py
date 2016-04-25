@@ -59,6 +59,8 @@ class NovelMain(object):
         while (time.time() - start_time) <= self.outtime:
             new_url = self.book_regular
             
+            time.sleep(5)
+            
             #补全链接中的http
             domian_host = self.parser.get_http_url(self.domain)
             

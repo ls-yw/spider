@@ -26,6 +26,8 @@ class HtmlDownloader(object):
                 self.filelogs.writeLogs(e.reason)
             else:
                 self.filelogs.writeLogs(e)
+                if e == 'HTTP Error 504: Gateway Time-out':
+                    exit()
             return None
         
         if response:
