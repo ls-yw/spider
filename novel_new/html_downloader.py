@@ -21,7 +21,11 @@ class HtmlDownloader(object):
             response = urllib2.urlopen(request,timeout=30)   #2.7
 #             response = urllib.urlopen(url)   #3
         except urllib2.URLError, e:
-            self.filelogs.writeLogs(e.reason)
+            print e
+            if any(e):
+                self.filelogs.writeLogs(e.reason)
+            else:
+                self.filelogs.writeLogs(e)
             return None
         
         if response:
