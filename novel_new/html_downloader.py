@@ -20,14 +20,15 @@ class HtmlDownloader(object):
         try:
             response = urllib2.urlopen(request,timeout=30)   #2.7
 #             response = urllib.urlopen(url)   #3
-        except urllib2.URLError, e:
-            print e
-            if any(e):
-                self.filelogs.writeLogs(e.reason)
+        except urllib2.HTTPError,e:    #HTTPError必须排在URLError的前面
+            self.filelogs.writeLogs(e.code)
+            if e.code == 404:
+                return None
             else:
-                self.filelogs.writeLogs(e)
-                if e == 'HTTP Error 504: Gateway Time-out':
-                    exit()
+                exit()
+        except urllib2.URLError, e:
+            self.filelogs.writeLogs('reason：'+e.reason)
+            exit()
             return None
         
         if response:
