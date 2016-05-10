@@ -22,7 +22,7 @@ class HtmlDownloader(object):
 #             response = urllib.urlopen(url)   #3
         except urllib2.HTTPError,e:    #HTTPError必须排在URLError的前面
             self.filelogs.writeLogs(e.code)
-            if e.code == 404:
+            if e.code == 404 or e.code == 403:
                 return None
             else:
                 exit()
